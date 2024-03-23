@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Image, View, Platform, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { Button, Image, View, Platform, Text, StyleSheet, Dimensions, TouchableOpacity, Animated } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 const { width, height } = Dimensions.get('window');
 
@@ -9,6 +9,19 @@ export default function ImagePickerExample() {
     const [postsStatus, setPostsStatus] = useState([]);
     const [showStatus, setShowStatus] = useState(false);
     const [viewStatus, setViewStatus] = useState();
+    const animation = useRef(new Animated.Value(0)).current;
+    const myTimeoutRef = useRef(null);
+
+    useEffect(() => {
+        Animated.loop(
+            Animated.timing(animation, {
+                toValue: 1,
+                duration: 5000,
+                useNativeDriver: true,
+            })
+        ).start();
+    }, []);
+
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -34,17 +47,35 @@ export default function ImagePickerExample() {
     function showStat(item) {
         setShowStatus(true);
         setViewStatus(item);
-        setTimeout(() => {
+        myTimeoutRef.current = setTimeout(() => {
             setShowStatus(false);
         }, 5000)
     }
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Animated.View
+                style={[
+                    styles.line,
+                    {
+                        transform: [
+                            {
+                                scaleX: animation.interpolate({
+                                    inputRange: [0, 1],
+                                    outputRange: [0, 330],
+                                }),
+                            },
+                        ],
+                    },
+                ]}
+            />
             {showStatus
                 ?
                 <View style={{ height: height, width: width, flex: 1, justifyContent: 'center' }}>
-                    <TouchableOpacity onPress={() => setShowStatus(false)}>
+                    <TouchableOpacity onPress={() => {
+                        setShowStatus(false)
+                        clearTimeout(myTimeoutRef.current);
+                    }}>
                         <Image source={{ uri: viewStatus }} style={{ width: width, height: 270 }} />
                     </TouchableOpacity>
                 </View>
@@ -65,7 +96,7 @@ export default function ImagePickerExample() {
                                 {
                                     postsStatus.map((item, index) => {
                                         return <View key={index} style={styles.statusView}>
-                                            <TouchableOpacity onPress={()=> showStat(item)} style={styles.touchable}>
+                                            <TouchableOpacity onPress={() => showStat(item)} style={styles.touchable}>
                                                 <Image style={{ height: 60, width: 60, borderRadius: 100 }} source={{ uri: item }} />
                                             </TouchableOpacity>
                                         </View>
@@ -111,5 +142,9 @@ const styles = StyleSheet.create({
         height: 70,
         width: 70,
         borderColor: 'green',
-    }
+    },
+    line: {
+        height: 2, 
+        backgroundColor: 'red', 
+    },
 });
