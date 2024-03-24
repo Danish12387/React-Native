@@ -144,7 +144,11 @@ const styles = StyleSheet.create({
         borderColor: 'green',
     },
     line: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: 1,
         height: 2, 
-        backgroundColor: 'red', 
+        backgroundColor: 'red',
     },
 });
