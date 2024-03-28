@@ -52,7 +52,7 @@ function Destination({ navigation, route }) {
         console.log('longitude', longitude);
         console.log('text', text);
 
-        fetch(`https://api.foursquare.com/v3/places/search?query=${text}&ll=${latitude},${longitude}&radius=3000`, options)
+        fetch(`https://api.foursquare.com/v3/places/search?query=${text}&ll=${latitude},${longitude}`, options)
             .then(response => response.json())
             .then(response => {
                 if (response.results.length !== 0) {
@@ -67,6 +67,7 @@ function Destination({ navigation, route }) {
     }
 
     return <View style={{ flex: 1, justifyContent: 'center' }}>
+        <Text style={{height: 60, fontSize: 16, textAlign: 'center', marginTop: 60, padding: 10}}>Pickup: {pickup.name}, {pickup.location.address}</Text>
         <MapView
             region={{
                 latitude: location.coords.latitude,
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     },
     searchContainer: {
         position: 'absolute',
-        top: 10,
+        top: 70,
         width: '100%',
         flex: 1,
         alignItems: 'center'
