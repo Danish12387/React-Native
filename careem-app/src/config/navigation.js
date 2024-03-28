@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import Dashboard from '../views/Dashboard';
 import Pickup from '../views/Pickup';
@@ -13,16 +14,27 @@ import Calls from '../views/Calls'
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialTopTabNavigator();
+const Drawer = createDrawerNavigator();
 
 function MainNavigator() {
     return (
-        <NavigationContainer>
+
             <Stack.Navigator>
                 <Stack.Screen name="Dashboard" component={Dashboard} />
                 <Stack.Screen name="Pickup" component={Pickup} />
                 <Stack.Screen name="Destination" component={Destination} />
                 <Stack.Screen name="CarSelection" component={CarSelection} />
             </Stack.Navigator>
+
+    );
+}
+
+function MyDrawer() {
+    return (
+        <NavigationContainer>
+            <Drawer.Navigator>
+                <Drawer.Screen name="Home" component={MainNavigator} />
+            </Drawer.Navigator>
         </NavigationContainer>
     );
 }
@@ -37,4 +49,4 @@ function TabNavigator() {
     )
 }
 
-export default MainNavigator;
+export default MyDrawer;
