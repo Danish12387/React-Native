@@ -1,9 +1,9 @@
 import { View, Button, StyleSheet, Text } from 'react-native';
 
-function Dashboard() {
+function Dashboard({navigation}) {
     
     return <View style={styles.container}>
-        <Button color='red' title='Take a Ride' />
+        <Button color='red' title='Take a Ride' onPress={()=> navigation.navigate("Pickup")}/>
         <Text>This is Dashboard</Text>
     </View>
 
