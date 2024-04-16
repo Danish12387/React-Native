@@ -1,7 +1,17 @@
 import { View, Text, Button } from "react-native";
+import { requestARide, getStatus } from "../config/firebase";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { currentStatus } from "../store";
 
 const CarSelection = ({ route }) => {
-    const { pickup, destination } = route.params;
+    const [timeStamps, setTimeStamp] = useState();
+    const [status, setStatus] = useState();
+    const [isClicked, setIsClicked] = useState(false);
+    const [Fares, setFares] = useState();
+    const dispatch = useDispatch();
+
+    const { pickup, destination } = route?.params;
     const fares = {
         bike: 50,
         car: 120,
@@ -9,14 +19,26 @@ const CarSelection = ({ route }) => {
         spaceShip: 1500
     }
 
-    const checkFares = (vehicle) => {
+    useEffect(() => {
+        getStatus((status) => {
+            setStatus(status)
+            dispatch(currentStatus({ status: status, isClicked, Fares }));
+        }, timeStamps)
+    }, [timeStamps])
+
+    const checkFares = async (vehicle) => {
         const baseFare = fares[vehicle];
         const { latitude: pickupLat, longitude: pickupLong } = pickup.geocodes.main;
         const { latitude: destLat, longitude: destLong } = destination.geocodes.main;
         const distance = calcCrow(pickupLat, pickupLong, destLat, destLong)
         const paisay = 'Rs.' + Math.round(distance * baseFare);
-        alert(paisay);
-        alert(Math.round(distance) + 'Km')
+        const time = Date.now();
+
+        setFares({ Cost: paisay, Distance: distance });
+
+        await requestARide({ pickup, destination, carType: vehicle, paisay, timeStamp: time })
+        setIsClicked(true);
+        setTimeStamp(time);
     }
 
     function calcCrow(lat1, lon1, lat2, lon2) {
@@ -46,6 +68,7 @@ const CarSelection = ({ route }) => {
             <Button onPress={() => checkFares('car')} title="Car" />
             <Button onPress={() => checkFares('helicopter')} title="Helicopter" />
             <Button onPress={() => checkFares('spaceShip')} title="Space Ship" />
+            {isClicked && <Text>Status: {status ? status : 'Pending'}</Text>}
         </View>
     )
 }

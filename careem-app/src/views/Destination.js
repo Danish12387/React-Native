@@ -9,7 +9,7 @@ function Destination({ navigation, route }) {
     const [places, setPlaces] = useState([]);
     const [isPlaces, setIsPlaces] = useState(false);
     const [isEmpty, setIsEmpty] = useState();
-    const { pickup } = route.params;    
+    const { pickup } = route.params;
 
     useEffect(() => {
         (async () => {
@@ -25,7 +25,7 @@ function Destination({ navigation, route }) {
                 distanceInterval: 1,
                 timeInterval: 1000
             }, (location) => {
-                setLocation(location)
+                setLocation(location);
             });
         })();
     }, []);
@@ -48,9 +48,6 @@ function Destination({ navigation, route }) {
         };
 
         const { latitude, longitude } = location.coords;
-        console.log('latitude', latitude);
-        console.log('longitude', longitude);
-        console.log('text', text);
 
         fetch(`https://api.foursquare.com/v3/places/search?query=${text}&ll=${latitude},${longitude}`, options)
             .then(response => response.json())
@@ -67,14 +64,17 @@ function Destination({ navigation, route }) {
     }
 
     return <View style={{ flex: 1, justifyContent: 'center' }}>
-        <Text style={{height: 60, fontSize: 16, textAlign: 'center', marginTop: 60, padding: 10}}>Pickup: {pickup.name}, {pickup.location.address}</Text>
+        <Text style={{ height: 60, fontSize: 16, textAlign: 'center', marginTop: 60, padding: 10 }}>Pickup: {pickup.name}, {pickup.location.address}</Text>
         <MapView
             region={{
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
-                longitudeDelta: 0.0009,
-                latitudeDelta: 0.0009
+                // longitudeDelta: LATITUDE_DELTA,
+                // latitudeDelta: LONGITUDE_DELTA
             }}
+            followsUserLocation={true}
+            showsUserLocation ={true}
+            loadingEnabled={true}
             style={styles.map} >
             <Marker
                 coordinate={{
@@ -99,7 +99,7 @@ function Destination({ navigation, route }) {
             }
         </View>
         <View style={styles.button}>
-            <Text style={{ fontSize: 16 }}>Type a location in search box and select your destination.</Text>
+            <Text style={{ fontSize: 16, color: 'white' }}>Type a location in search box and select your destination.</Text>
         </View>
     </View>
 }

@@ -47,9 +47,6 @@ function Pickup({ navigation }) {
         };
 
         const { latitude, longitude } = location.coords;
-        console.log('latitude', latitude);
-        console.log('longitude', longitude);
-        console.log('text', text);
 
         fetch(`https://api.foursquare.com/v3/places/search?query=${text}&ll=${latitude},${longitude}&radius=3000`, options)
             .then(response => response.json())
@@ -72,6 +69,7 @@ function Pickup({ navigation }) {
                 longitudeDelta: 0.0009,
                 latitudeDelta: 0.0009
             }}
+            loadingEnabled={true}
             style={styles.map} >
             <Marker
                 coordinate={{
@@ -96,7 +94,7 @@ function Pickup({ navigation }) {
             }
         </View>
         <View style={styles.button}>
-            <Text style={{ fontSize: 16 }}>Type your location in search box and select your location.</Text>
+            <Text style={{ fontSize: 16, color: 'white' }}>Type your location in search box and select your location.</Text>
         </View>
     </View>
 }
